@@ -1,0 +1,36 @@
+/* transition.css — 页面间过渡动画（大厅 ⇄ 条目）。
+   进场淡入上浮、离场淡出；prefers-reduced-motion 下自动禁用。 */
+
+body {
+  animation: page-in .22s ease-out both;
+}
+
+@keyframes page-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+body.page-leaving {
+  opacity: 0;
+  transform: translateY(-4px);
+  transition: opacity .14s ease-in, transform .14s ease-in;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body {
+    animation: none;
+  }
+
+  body.page-leaving {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}

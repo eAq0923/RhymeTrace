@@ -2,6 +2,12 @@
   const { data, state } = app;
   const select = (selector) => document.querySelector(selector);
 
+  function esc(s) {
+    return String(s).replace(/[&<>"']/g, (c) => (
+      { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]
+    ));
+  }
+
   function markRhymes(text, rhymes) {
     return text.replace(new RegExp(`([${rhymes.join('')}])`, 'g'), '<mark>$1</mark>');
   }
@@ -46,28 +52,24 @@
 
     select('#charsList').innerHTML = matches.length
       ? matches.map(([char, count]) => (
-        `<button class="char ${state.selected === char ? 'selected' : ''}" data-char="${char}">${char}<span class="mini">${count}</span></button>`
+        `<button class="char" data-char="${char}">${char}<span class="mini">${count}</span></button>`
       )).join('')
-      : '<span class="muted">暂未找到这个字，试试“诗”或“枝”</span>';
-    select('#selectedChar').textContent = state.selected || '未选择';
+      : '<span class="muted">暂未找到这个字，试试"诗"或"枝"</span>';
   }
 
   function renderEvidence() {
     const poems = data.poems.filter((poem) => (
-      (state.activeEra === 'all' || poem.era === state.activeEra)
-      && (!state.selected || poem.rhymes.includes(state.selected))
+      state.activeEra === 'all' || poem.era === state.activeEra
     ));
 
-    select('#evidenceHint').textContent = state.selected
-      ? `正在查看“${state.selected}”的相关样例 · ${poems.length} 条`
-      : '展示可追溯样例；候选与已核验状态分开标记';
+    select('#evidenceHint').textContent = '展示可追溯样例；候选与已核验状态分开标记';
 
     select('#evidenceList').innerHTML = poems.length
       ? poems.map((poem) => `<article class="panel evidence" data-poem="${poem.id}">
-          <div class="era">${poem.era}<small>${poem.author}</small></div>
+          <div class="era">${poem.era}<small>${esc(poem.author)}</small></div>
           <div>
-            <h3>${poem.title}</h3>
-            <p>${markRhymes(poem.text.split('\n')[0], poem.rhymes)}</p>
+            <h3>${esc(poem.title)}</h3>
+            <p>${markRhymes(esc(poem.text.split('\n')[0]), poem.rhymes)}</p>
             <span class="badge ${poem.status.includes('候选') ? 'pending' : ''}">${poem.status}</span>
           </div>
           <div class="proof">${poem.rhymes.map((rhyme) => `「${rhyme}」`).join(' ')}<br><span class="evidence-link">查看原诗 →</span></div>
@@ -82,13 +84,13 @@
     select('#modalByline').textContent = `${poem.era} · ${poem.author}`;
     select('#modalText').innerHTML = poem.text
       .split('\n')
-      .map((line) => markRhymes(line, poem.rhymes))
+      .map((line) => markRhymes(esc(line), poem.rhymes))
       .join('<br>');
     select('#modalInfo').innerHTML = `
       <div>韵脚候选 <b>${poem.rhymes.join('、')}</b></div>
-      <div>状态 <b>${poem.status}</b></div>
-      <div>来源 <b>${poem.source}</b></div>
-      <div>备注 <b>${poem.note}</b></div>`;
+      <div>状态 <b>${esc(poem.status)}</b></div>
+      <div>来源 <b>${esc(poem.source)}</b></div>
+      <div>备注 <b>${esc(poem.note)}</b></div>`;
     select('#modal').classList.add('open');
   }
 

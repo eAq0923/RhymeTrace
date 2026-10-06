@@ -1,0 +1,7 @@
+# 系统垃圾文件
+Thumbs.db
+Desktop.ini
+.DS_Store
+
+# Python
+__pycache__/

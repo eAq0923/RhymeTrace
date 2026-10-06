@@ -1,8 +1,7 @@
 (function registerState(app) {
   const initialState = Object.freeze({
     activeEra: 'all',
-    mode: 'count',
-    selected: null
+    mode: 'count'
   });
 
   app.state = { ...initialState };

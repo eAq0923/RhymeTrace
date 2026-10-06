@@ -22,9 +22,7 @@
     const button = event.target.closest('[data-char]');
     if (!button) return;
 
-    state.selected = button.dataset.char;
-    view.renderAll();
-    select('#evidence').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    app.navigate(`entry.html?char=${encodeURIComponent(button.dataset.char)}`);
   });
 
   select('#evidenceList').addEventListener('click', (event) => {
@@ -35,6 +33,11 @@
   });
 
   select('#charSearch').addEventListener('input', view.renderChars);
+  select('#charSearch').addEventListener('keydown', (event) => {
+    if (event.key !== 'Enter') return;
+    const value = (select('#charSearch').value || '').trim();
+    if (value) app.navigate(`entry.html?char=${encodeURIComponent(value)}`);
+  });
   select('#resetBtn').addEventListener('click', () => {
     app.resetState();
     select('#charSearch').value = '';

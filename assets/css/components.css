@@ -365,8 +365,7 @@
   font-size: 19px;
 }
 
-.char:hover,
-.char.selected {
+.char:hover {
   border-color: var(--moss);
   background: var(--pale);
   color: var(--moss-dark);

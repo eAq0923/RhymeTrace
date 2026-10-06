@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>条目 · 韵部探索器</title>
+
+  <link rel="stylesheet" href="assets/css/base.css" />
+  <link rel="stylesheet" href="assets/css/layout.css" />
+  <link rel="stylesheet" href="assets/css/components.css" />
+  <link rel="stylesheet" href="assets/css/entry.css" />
+  <link rel="stylesheet" href="assets/css/transition.css" />
+
+  <script defer src="assets/js/data.js"></script>
+  <script defer src="assets/js/entry-data.js"></script>
+  <script defer src="assets/js/charmaps.js"></script>
+  <script defer src="assets/js/transition.js"></script>
+  <script defer src="assets/js/entry.js"></script>
+</head>
+
+<body>
+  <div class="topbar">
+    PROTOTYPE / 条目视图
+    <span>搜索后展示 · 数据层可替换 · 暂不代表完整统计结论</span>
+  </div>
+
+  <div class="shell">
+    <header>
+      <div class="brand">
+        <div class="seal">韵</div>
+
+        <div>
+          <div class="brand-title">韵部条目</div>
+          <div class="brand-sub">词典式条目 · 输入一个字或一个韵部</div>
+        </div>
+      </div>
+
+      <nav>
+        <a href="index.html">← 返回大厅</a>
+        <a href="index.html#method">口径说明</a>
+      </nav>
+    </header>
+
+    <main>
+      <section class="panel query-bar" aria-label="条目查询">
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          aria-hidden="true"
+        >
+          <circle cx="11" cy="11" r="7"></circle>
+          <path d="m20 20-4-4"></path>
+        </svg>
+
+        <input
+          id="entryQuery"
+          type="search"
+          maxlength="4"
+          placeholder="输入一个字（枝、江、诗…）或韵部（四支、三江）"
+          aria-label="输入一个字或韵部名"
+        />
+
+        <button class="text-link" id="entryGo" type="button">查询 →</button>
+        <span class="query-hint muted" id="queryHint"></span>
+      </section>
+
+      <div id="entryRoot" aria-live="polite"></div>
+      <div id="quizRoot"></div>
+    </main>
+
+    <footer>
+      <div>
+        <div class="footer-mark">韵部条目 / entry</div>
+        <div>词典式条目视图 · 无后端 · 演示数据</div>
+      </div>
+
+      <div class="footer-meta">
+        条目文案为草案，待人工核验后替换<br />
+        演示范围：四支、三江
+      </div>
+    </footer>
+  </div>
+</body>
+</html>
