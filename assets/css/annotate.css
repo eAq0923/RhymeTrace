@@ -1,0 +1,208 @@
+/* annotate.css — 标注工作台（annotate.html）专用样式，复用 base.css 令牌。 */
+
+.anno-select {
+  border: 1px solid var(--line);
+  background: #faf9f3;
+  color: var(--ink);
+  border-radius: 9px;
+  padding: 7px 10px;
+  font-size: 13px;
+  min-width: 220px;
+}
+
+.anno-new {
+  padding: 22px 24px;
+  margin-bottom: 20px;
+  display: grid;
+  gap: 14px;
+}
+
+.anno-new[hidden] {
+  display: none;
+}
+
+.new-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.anno-new label {
+  display: grid;
+  gap: 5px;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.anno-new input,
+.anno-new textarea {
+  border: 1px solid var(--line);
+  background: #faf9f3;
+  color: var(--ink);
+  border-radius: 9px;
+  padding: 8px 10px;
+  font-size: 14px;
+  font-family: inherit;
+}
+
+.anno-new textarea {
+  font-family: Georgia, "Noto Serif SC", serif;
+  line-height: 2;
+  resize: vertical;
+}
+
+.anno-new .pill {
+  justify-self: start;
+}
+
+.anno-board {
+  padding: 24px 26px;
+  margin-bottom: 20px;
+}
+
+.anno-board[hidden],
+.anno-export[hidden] {
+  display: none;
+}
+
+.anno-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+
+.anno-head h2 {
+  font-family: Georgia, "Noto Serif SC", serif;
+  font-size: 22px;
+  font-weight: 500;
+  margin: 0;
+}
+
+.anno-counts {
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.anno-counts b {
+  color: var(--moss-dark);
+}
+
+.line-list {
+  display: grid;
+  gap: 8px;
+}
+
+.line-row {
+  display: grid;
+  grid-template-columns: 34px 1fr auto auto;
+  gap: 12px;
+  align-items: center;
+  padding: 9px 12px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: #faf9f3;
+}
+
+.line-no {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.line-text {
+  font-family: Georgia, "Noto Serif SC", serif;
+  font-size: 17px;
+}
+
+.final-char {
+  border: 1px solid var(--line);
+  background: var(--card);
+  color: var(--ink);
+  border-radius: 8px;
+  width: 40px;
+  height: 40px;
+  font-family: Georgia, "Noto Serif SC", serif;
+  font-size: 20px;
+  transition: .15s;
+}
+
+.final-char:hover {
+  border-color: var(--moss);
+}
+
+.final-char.rhyme {
+  background: var(--moss);
+  border-color: var(--moss);
+  color: #fff;
+}
+
+.final-char.not-rhyme {
+  background: #f5e9dc;
+  border-color: #dcbfa4;
+  color: #936044;
+}
+
+.line-status {
+  font-size: 11px;
+  color: var(--muted);
+  min-width: 52px;
+  text-align: right;
+}
+
+.note-label {
+  display: grid;
+  gap: 5px;
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 16px;
+}
+
+.note-label input {
+  border: 1px solid var(--line);
+  background: #faf9f3;
+  color: var(--ink);
+  border-radius: 9px;
+  padding: 8px 10px;
+  font-size: 13px;
+}
+
+.anno-actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-top: 16px;
+}
+
+.anno-export {
+  padding: 20px 24px;
+  margin-bottom: 20px;
+}
+
+.jsonl {
+  margin: 12px 0 0;
+  padding: 14px 16px;
+  background: #faf8ef;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  font: 12px/1.8 Consolas, monospace;
+  max-height: 260px;
+  overflow: auto;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+@media (max-width: 640px) {
+  .new-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .line-row {
+    grid-template-columns: 26px 1fr auto;
+  }
+
+  .line-status {
+    display: none;
+  }
+}

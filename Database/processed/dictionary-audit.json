@@ -1,0 +1,145 @@
+{
+  "source": {
+    "path": "Database/3江韵4支韵_级联测试.md",
+    "sha256": "bd6fd0315e34cc82f2176bd143ad6e5097e4a067f3ef9139ef9f08525bea75be",
+    "lineCount": 27031,
+    "reviewStatus": "unreviewed",
+    "edition": null,
+    "provider": null,
+    "license": null
+  },
+  "entryCount": 489,
+  "recordCount": 17724,
+  "groups": {
+    "三江": {
+      "entries": 46,
+      "distinctHeadwords": 46
+    },
+    "四支": {
+      "entries": 443,
+      "distinctHeadwords": 437
+    }
+  },
+  "repeatedHeadwords": {
+    "奇": 2,
+    "籬": 2,
+    "衰": 2,
+    "祇": 2,
+    "其": 2,
+    "睢": 2
+  },
+  "sections": {
+    "韵藻": 2701,
+    "增": 12531,
+    "对语": 1229,
+    "摘句": 1263
+  },
+  "issues": [
+    {
+      "line": 19150,
+      "kind": "heading",
+      "text": "韵部标题未写分册序号，卷名为四之八"
+    },
+    {
+      "line": 2473,
+      "kind": "missing-term",
+      "text": "廣雅丨丨酒篘也"
+    },
+    {
+      "line": 2485,
+      "kind": "missing-term",
+      "text": "説文丨丨並足而立也"
+    },
+    {
+      "line": 129,
+      "kind": "uncertain-character",
+      "text": "?江：郭璞江賦三蝬丨丨注丨丨似蟹而小十二脚讀作流"
+    },
+    {
+      "line": 2055,
+      "kind": "uncertain-character",
+      "text": "豚□-羊腔"
+    },
+    {
+      "line": 5129,
+      "kind": "uncertain-character",
+      "text": "噓?宜：劉勰新論伏臘合歡必歌採菱牽石拖舟則歌噓非無激楚之音然而棄不用者方引重抽力不若丨丨之丨也"
+    },
+    {
+      "line": 7264,
+      "kind": "uncertain-character",
+      "text": "    魏都賦□井丨丨𤣥滋素液"
+    },
+    {
+      "line": 11738,
+      "kind": "uncertain-character",
+      "text": "五篇詩：東都賦主人之辭未終西都賔矍然失容逡廵降階□然意下捧手欲辭主人曰復位今將受子以丨丨之丨"
+    },
+    {
+      "line": 14369,
+      "kind": "uncertain-character",
+      "text": "粉絲：林逋鷺□詩閒颺丨丨荷葦外"
+    },
+    {
+      "line": 16472,
+      "kind": "uncertain-character",
+      "text": "神螭：吳都賦封狶□丨丨掩"
+    },
+    {
+      "line": 18585,
+      "kind": "uncertain-character",
+      "text": "    詩□鷃失丨丨"
+    },
+    {
+      "line": 19317,
+      "kind": "uncertain-character",
+      "text": "謝岐：南史丨丨少機警好學仕梁為山陰令陳武帝引叅機宻為兼尚書右丞時軍旅屢興糧儲多□岐所在幹理深被知遇"
+    },
+    {
+      "line": 23442,
+      "kind": "uncertain-character",
+      "text": "?獅：唐書西域傳師子居南海中能丨養丨子因以名國"
+    },
+    {
+      "line": 25243,
+      "kind": "uncertain-character",
+      "text": "弋支切方言榻前几趙魏之間謂之丨一曰衣架亦作□"
+    },
+    {
+      "line": 25789,
+      "kind": "uncertain-character",
+      "text": "共蚳：周禮鱉人祭祀丨□嬴丨以授醢人"
+    },
+    {
+      "line": 26016,
+      "kind": "uncertain-character",
+      "text": "丑知切猛獸説文作□山神獸也又吕支切卦名通作離"
+    },
+    {
+      "line": 26151,
+      "kind": "uncertain-character",
+      "text": "許羈切玉篇口聲廣韻作□又寘韻"
+    },
+    {
+      "line": 26505,
+      "kind": "uncertain-character",
+      "text": "    丨羊曰□"
+    },
+    {
+      "line": 26507,
+      "kind": "uncertain-character",
+      "text": "    楞嚴經橋梵鉢提有丨丨病按齝一作呞又作□"
+    },
+    {
+      "line": 26809,
+      "kind": "uncertain-character",
+      "text": "敷覊切耕也通作□"
+    }
+  ],
+  "notes": [
+    "仅按源文件结构抽取，全部待核验；字条数不等于已确认的可用韵字数。",
+    "反切仅记录释义首个切字之前的原文；不推导现代读音或小韵。",
+    "丨占位符、缺字、异体、重出字和原文缩进均保留；不自动补字、还原引文或判定韵脚。",
+    "引文保留整条及其续行，不推断作者、朝代、诗题或诗歌统计。"
+  ]
+}

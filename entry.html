@@ -11,17 +11,17 @@
   <link rel="stylesheet" href="assets/css/entry.css" />
   <link rel="stylesheet" href="assets/css/transition.css" />
 
-  <script defer src="assets/js/data.js"></script>
-  <script defer src="assets/js/entry-data.js"></script>
   <script defer src="assets/js/charmaps.js"></script>
+  <script defer src="assets/js/dictionary-data.js"></script>
+  <script defer src="assets/js/dictionary.js"></script>
   <script defer src="assets/js/transition.js"></script>
   <script defer src="assets/js/entry.js"></script>
 </head>
 
 <body>
   <div class="topbar">
-    PROTOTYPE / 条目视图
-    <span>搜索后展示 · 数据层可替换 · 暂不代表完整统计结论</span>
+    DICTIONARY / 条目视图
+    <span>三江 · 四支 · 据所提供文本整理，待核验</span>
   </div>
 
   <div class="shell">
@@ -30,13 +30,14 @@
         <div class="seal">韵</div>
 
         <div>
-          <div class="brand-title">韵部条目</div>
-          <div class="brand-sub">词典式条目 · 输入一个字或一个韵部</div>
+          <div class="brand-title">条目查询</div>
+          <div class="brand-sub">三江 · 四支 · 字词与引文查询</div>
         </div>
       </div>
 
       <nav>
         <a href="index.html">← 返回大厅</a>
+        <a href="sources.html">词语与引文</a>
         <a href="index.html#method">口径说明</a>
       </nav>
     </header>
@@ -57,28 +58,28 @@
         <input
           id="entryQuery"
           type="search"
-          maxlength="4"
-          placeholder="输入一个字（枝、江、诗…）或韵部（四支、三江）"
-          aria-label="输入一个字或韵部名"
+          maxlength="80"
+          placeholder="输入字、词语或韵部名（江、春江、四支…）"
+          aria-label="输入字、词语或韵部名"
         />
 
         <button class="text-link" id="entryGo" type="button">查询 →</button>
         <span class="query-hint muted" id="queryHint"></span>
       </section>
 
+      <nav class="result-views" id="resultViews" aria-label="查询结果视图"></nav>
       <div id="entryRoot" aria-live="polite"></div>
-      <div id="quizRoot"></div>
     </main>
 
     <footer>
       <div>
-        <div class="footer-mark">韵部条目 / entry</div>
-        <div>词典式条目视图 · 无后端 · 演示数据</div>
+        <div class="footer-mark">条目查询 / entry</div>
+        <div>词典式条目视图 · 无后端 · 源文件字形与释义</div>
       </div>
 
       <div class="footer-meta">
-        条目文案为草案，待人工核验后替换<br />
-        演示范围：四支、三江
+        数据按提供文本整理，尚未经逐字校对<br />
+        收录范围：四支、三江
       </div>
     </footer>
   </div>
