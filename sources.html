@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>词语与引文 · 韵部探索器</title>
+  <link rel="stylesheet" href="assets/css/base.css" />
+  <link rel="stylesheet" href="assets/css/layout.css" />
+  <link rel="stylesheet" href="assets/css/components.css" />
+  <link rel="stylesheet" href="assets/css/entry.css" />
+  <link rel="stylesheet" href="assets/css/transition.css" />
+  <script defer src="assets/js/charmaps.js"></script>
+  <script defer src="assets/js/dictionary-data.js"></script>
+  <script defer src="assets/js/dictionary.js"></script>
+  <script defer src="assets/js/transition.js"></script>
+  <script defer src="assets/js/sources.js"></script>
+</head>
+<body>
+  <div class="topbar">DICTIONARY / 词语与引文<span>据所提供文本整理 · 待核验</span></div>
+  <div class="shell">
+    <header>
+      <div class="brand"><div class="seal">韵</div><div>
+        <div class="brand-title">词语与引文</div>
+        <div class="brand-sub">韵藻 · 增补 · 对语 · 摘句</div>
+      </div></div>
+      <nav><a href="entry.html">← 查询条目</a><a href="index.html">大厅</a></nav>
+    </header>
+    <main>
+      <form class="panel query-bar" id="sourceForm" aria-label="检索韵书资料">
+        <label for="sourceQuery">查询</label>
+        <input id="sourceQuery" type="search" maxlength="80" placeholder="输入字、词语或韵部名（江、春江、四支…）" aria-label="输入字、词语或韵部名" />
+        <button class="text-link" id="sourceGo" type="submit">查询 →</button>
+      </form>
+      <nav class="result-views" id="resultViews" aria-label="查询结果视图"></nav>
+      <div class="source-filters" id="sourceFilters" role="group" aria-label="资料筛选">
+        <label for="sourceRhyme">韵部</label>
+        <select id="sourceRhyme" form="sourceForm"><option value="">全部</option><option>三江</option><option>四支</option></select>
+        <label for="sourceSection">类型</label>
+        <select id="sourceSection" form="sourceForm"><option value="">全部</option><option>引文</option><option>韵藻</option><option>增</option><option>对语</option><option>摘句</option></select>
+        <button class="text-link" type="submit" form="sourceForm" value="filters">应用筛选 →</button>
+      </div>
+      <div id="sourceContext"></div>
+      <p class="muted" id="sourceCount" aria-live="polite"></p>
+      <div id="sourceRoot"></div>
+      <nav class="source-pagination" id="sourcePages" aria-label="结果分页"></nav>
+    </main>
+    <footer><div><div class="footer-mark">韵书资料 / sources</div><div>收录记录数不代表历史用韵频次</div></div>
+      <div class="footer-meta">原文中的丨为代字记号，保留不自动补写<br />底本、来源及校对说明待补</div></footer>
+  </div>
+</body>
+</html>

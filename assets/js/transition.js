@@ -3,10 +3,11 @@
 (function registerTransition(app) {
   const EXIT_MS = 140;
 
-  app.navigate = function navigate(url) {
+  app.navigate = function navigate(url, options = {}) {
     document.body.classList.add('page-leaving');
     setTimeout(() => {
-      window.location.href = url;
+      if (options.replace) window.location.replace(url);
+      else window.location.href = url;
     }, EXIT_MS);
   };
 
