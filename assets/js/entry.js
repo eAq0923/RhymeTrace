@@ -1,95 +1,258 @@
-// Source-backed dictionary entries. Long source material lives on sources.html.
+// 条目视图渲染：只消费 data.js 与 entry-data.js，不内嵌任何文案。
 (function initializeEntry(app) {
-  const d = app.dictionary;
-  const { esc, link, rows, chips } = d;
-  const root = document.querySelector('#entryRoot');
-  const query = document.querySelector('#entryQuery');
-  const params = new URLSearchParams(location.search);
-  const currentQuery = params.get('char') || params.get('rhyme') || '';
-  const preferredView = currentQuery || params.get('mode') === 'entry' ? 'entry' : undefined;
-  d.renderViews(document.querySelector('#resultViews'), currentQuery, 'entry');
+  const { data, entryData } = app;
+  const select = (selector) => document.querySelector(selector);
+  const root = select('#entryRoot');
 
-  function setTitle(kind, value = '') {
-    document.querySelector('.brand-title').textContent = kind;
-    document.querySelector('.footer-mark').textContent = `${kind} / entry`;
-    document.title = `${value ? value + ' · ' : ''}${kind} · 韵部探索器`;
+  const { t2s, s2t } = app.charmaps || { t2s: {}, s2t: {} };
+
+  function esc(s) {
+    return String(s).replace(/[&<>"']/g, (c) => (
+      { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]
+    ));
   }
 
-  function seeAlso(rhyme) {
-    return `<span class="see-also">${link('entry.html', { rhyme }, `韵部·${rhyme}`)}
-      ${link('entry.html', { rhyme: rhyme === '三江' ? '四支' : '三江' }, '另一韵部')}
-      ${link('sources.html', { rhyme }, '词语与引文')}<a href="index.html">大厅</a></span>`;
+  function normalizeChar(ch) {
+    return t2s[ch] || ch;
   }
 
-  function renderChar(value) {
-    const matches = d.find(value);
-    if (!matches.length) return renderUnknown(`暂无「${value}」的字条，可继续检索词语与引文。`, value);
-    root.innerHTML = matches.map((entry) => {
-      const citations = entry.records.filter((record) => ['韵藻', '增'].includes(record.section));
-      const terms = [...new Set(citations.map((record) => record.term).filter(Boolean))];
-      const counts = (type) => entry.records.filter((record) => record.section === type).length;
-      const detail = (section, label) => link('sources.html', { entry: entry.id, section }, label);
-      const same = d.headwords(entry.rhyme).filter((headword) => headword !== entry.headword);
-      return `<div class="entry-head"><span class="entry-char">${esc(entry.headword)}</span>
-        <span class="entry-trad">源文件字形</span><span class="badge pending entry-role">待核验</span></div>
-        <section class="panel entry-card">${rows([
-          ['韵部', `上平 · ${esc(entry.rhyme)} · 卷${esc(entry.volume)}`],
-          ['释义', esc(entry.gloss)],
-          ['词语', `${citations.length} 条韵藻与增补记录 · ${detail('引文', '查看词语与典故 →')}
-            <span class="sub">${terms.slice(0, 6).map(esc).join('、') || '未列出带词头的引文'}</span>`],
-          ['对语', `${counts('对语')} 条 · ${detail('对语', '查看对语 →')}`],
-          ['摘句', `${counts('摘句')} 条 · ${detail('摘句', '查看摘句 →')}`],
-          ['同部字', chips(same.slice(0, 12)) + link('sources.html', { rhyme: entry.rhyme, view: 'characters' }, '查看字表 →')],
-          ['出处', `${esc(d.sourceLabel(entry))} · ${link('sources.html', { entry: entry.id, view: 'original' }, '查看本字原文 →')}`],
-          ['参见', seeAlso(entry.rhyme)]
-        ])}</section>`;
-    }).join('');
-    if (matches.length > 1) root.insertAdjacentHTML('afterbegin',
-      `<p class="muted">找到 ${matches.length} 个字条；源文件中的重出字、释义及读音说明分别保留。</p>`);
-    query.value = value;
-    setTitle('字条目', value);
+  function markLine(line, rhymes) {
+    return line.replace(new RegExp(`([${rhymes.join('')}])`, 'g'), '<mark>$1</mark>');
   }
 
-  function renderRhyme(name) {
-    const entries = d.groupEntries(name);
-    const words = d.headwords(name);
-    const volumes = [...new Set(entries.map((entry) => entry.volume))];
-    const recordCount = entries.reduce((sum, entry) => sum + entry.records.length, 0);
-    root.innerHTML = `<div class="entry-head"><span class="entry-char">${esc(name)}</span>
-      <span class="entry-pinyin">上平</span><span class="badge pending entry-role">待核验</span></div>
-      <section class="panel entry-card">${rows([
-        ['收录', `${entries.length} 个字条 · ${words.length} 种原字形 · ${volumes.length} 个卷段
-          <span class="sub">按所提供文件抽取；重出字不合并，尚未确认底本完整性。</span>`],
-        ['字表', chips(words.slice(0, 24)) + link('sources.html', { rhyme: name, view: 'characters' }, `查看全部 ${words.length} 种字形 →`)],
-        ['资料', `${recordCount} 条韵藻、增补、对语与摘句 · ${link('sources.html', { rhyme: name }, '检索词语与引文 →')}`],
-        ['出处', `《佩文韵府》卷${volumes.map(esc).join('、')}<span class="sub">来源底本、校对与使用说明待补；文件收录量不代表历史用韵频次。</span>`],
-        ['参见', seeAlso(name)]
-      ])}</section>`;
-    query.value = name;
-    setTitle('韵部条目', name);
+  function chips(chars, counts) {
+    return `<div class="chips">${chars.map((ch) => {
+      const mini = counts && counts[ch] ? `<span class="mini">${counts[ch]}</span>` : '';
+      return `<a class="chip" href="entry.html?char=${encodeURIComponent(ch)}">${ch}${mini}</a>`;
+    }).join('')}</div>`;
   }
 
-  function renderUnknown(message, value = '') {
-    root.innerHTML = `<div class="panel empty-state">${esc(message)}
-      ${value ? link('sources.html', { q: value, mode: 'fulltext' }, '检索词语与引文 →') : ''}</div>
-      <section class="panel entry-card">${rows([
-        ['字条目', chips(['江', '窓', '支', '枝', '詩'])],
-        ['韵部', `<span class="see-also">${d.groups.map((rhyme) => link('entry.html', { rhyme }, rhyme)).join('')}</span>`],
-        ['资料', link('sources.html', {}, '检索全部词语与引文 →')]
-      ])}</section>`;
-    query.value = value;
-    setTitle(value ? '字条目' : '条目查询', value);
+  function groupChars(group) {
+    return group.charsFromData
+      ? (data.chars || []).map(([ch]) => ch)
+      : group.chars || [];
+  }
+
+  function groupCounts(group) {
+    if (!group.charsFromData) return null;
+    return Object.fromEntries((data.chars || []).map(([ch, n]) => [ch, n]));
+  }
+
+  function groupOfChar(ch) {
+    return Object.values(entryData.groups).find((group) => (
+      group.charsFromData
+        ? (data.chars || []).some(([c]) => c === ch)
+        : (group.chars || []).includes(ch)
+    )) || null;
+  }
+
+  function charUsage(group, ch) {
+    if (group.charsFromData) {
+      const list = data.chars || [];
+      const hit = list.find(([c]) => c === ch) || [];
+      const rank = list.findIndex(([c]) => c === ch) + 1;
+      return `样本中作韵脚 ${hit[1] || 0} 次（演示）· 字表第 ${rank} 位 → <a href="index.html">大厅分布图</a>`;
+    }
+    return group.usagePending;
+  }
+
+  function verifiedPoems(ch) {
+    return (data.poems || []).filter((poem) => (
+      poem.rhymes.includes(ch) && poem.status.indexOf('已核验') >= 0
+    ));
+  }
+
+  function examplesRow(group, ch) {
+    const poems = verifiedPoems(ch);
+    if (!poems.length) return `<span class="muted">${group.examplePending}</span>`;
+    return poems.map((poem) => `
+      <div class="entry-example">
+        <div>${markLine(esc(poem.text.split('\n')[0]), poem.rhymes)}</div>
+        <span class="muted">${poem.era} · ${esc(poem.author)}《${esc(poem.title)}》 · 韵脚：${poem.rhymes.map((r) => `「${r}」`).join('')}</span>
+        <span class="badge">${poem.status}</span>
+      </div>`).join('');
+  }
+
+  function notesRow(group) {
+    return group.notes.map((note) => (
+      `<div class="entry-note-item">${note.text}<span class="tag">${note.tag}</span></div>`
+    )).join('');
+  }
+
+  function rows(list) {
+    return list.map(([label, body]) => `
+      <div class="entry-row">
+        <span class="entry-label">【${label}】</span>
+        <div class="entry-body">${body}</div>
+      </div>`).join('');
+  }
+
+  function seeAlso(group) {
+    return `<span class="see-also">
+      <a href="entry.html?rhyme=${encodeURIComponent(group.name)}">韵部·${group.name}</a>
+      <a href="entry.html?rhyme=${encodeURIComponent(group.peer.name)}">${group.peer.label}</a>
+      <a href="index.html#method">口径说明</a>
+    </span>`;
+  }
+
+  function renderQuiz(group, quizIndex) {
+    const host = select('#quizRoot');
+    const pool = (group.quizzes || []).filter((q) => !q.backup);
+    if (!pool.length) {
+      host.innerHTML = '';
+      return;
+    }
+
+    const current = typeof quizIndex === 'number'
+      ? quizIndex
+      : Math.max(0, pool.findIndex((q) => q.default));
+    const quiz = pool[current];
+
+    host.innerHTML = `
+      <section class="panel quiz-card">
+        <div class="quiz-head">
+          <span class="badge">测一问</span>
+          <button class="text-link" id="quizNext" type="button">换一题 ↻</button>
+        </div>
+        <div class="quiz-stem">${quiz.stem}</div>
+        <div class="quiz-opts">
+          ${quiz.options.map((opt, i) => `<button class="quiz-opt" data-index="${i}" type="button">${opt}</button>`).join('')}
+        </div>
+        <div class="quiz-feedback" id="quizFeedback" aria-live="polite"></div>
+      </section>`;
+
+    function settle(picked) {
+      const feedback = select('#quizFeedback');
+      feedback.classList.add('show');
+      feedback.innerHTML = `
+        <div>${picked === quiz.answer ? quiz.right : quiz.wrong}</div>
+        <span class="quiz-basis">依据：${quiz.basis}</span>`;
+      host.querySelectorAll('.quiz-opt').forEach((button, i) => {
+        button.disabled = true;
+        if (i === quiz.answer) button.classList.add('correct');
+        else if (i === picked) button.classList.add('wrong');
+      });
+    }
+
+    host.querySelectorAll('.quiz-opt').forEach((button) => {
+      button.addEventListener('click', () => settle(Number(button.dataset.index)));
+    });
+    host.querySelector('#quizNext').addEventListener('click', () => {
+      renderQuiz(group, (current + 1) % pool.length);
+    });
+  }
+
+  function renderCharEntry(ch) {
+    const group = groupOfChar(ch);
+    if (!group) return renderUnknown(`暂无「${esc(ch)}」的条目——演示范围见下方快速入口。`);
+
+    const pinyin = entryData.pinyin[ch] ? `<span class="entry-pinyin">${entryData.pinyin[ch]}</span>` : '';
+    const trad = entryData.pinyin[ch]
+      ? `<span class="entry-trad">─ 繁體 ${s2t[ch] || ch}</span>` : '';
+    const peers = groupChars(group).filter((c) => c !== ch);
+
+    root.innerHTML = `
+      <div class="entry-head">
+        <span class="entry-char">${ch}</span>
+        ${pinyin}${trad}
+        <span class="badge entry-role">${group.role}</span>
+      </div>
+      <section class="panel entry-card">
+        ${rows([
+          ['韵部', `平水韵 · ${group.shortLabel}（${group.source} · ${group.xiaoyun}）<span class="sub">邻韵：${group.neighbor}</span>`],
+          ['同韵字', chips(peers, groupCounts(group)) + (group.charsNote ? `<span class="sub">${group.charsNote}</span>` : '')],
+          ['例证', examplesRow(group, ch)],
+          ['用韵', charUsage(group, ch)],
+          ['注', notesRow(group)],
+          ['参见', seeAlso(group)]
+        ])}
+      </section>`;
+    document.title = `${ch} · 韵部探索器`;
+    renderQuiz(group);
+  }
+
+  function renderRhymeEntry(group) {
+    const usage = group.charsFromData
+      ? (data.eraData || []).filter((era) => era.status === 'ready')
+        .map((era) => `${era.id} ${era.value}`).join(' · ')
+        .concat('（样本）→ <a href="index.html">大厅分布图</a>')
+      : group.usagePending;
+
+    root.innerHTML = `
+      <div class="entry-head">
+        <span class="entry-char">${group.name}</span>
+        <span class="entry-pinyin">${group.volume}</span>
+        <span class="badge entry-role">${group.role}</span>
+      </div>
+      <section class="panel entry-card">
+        ${rows([
+          ['字表', chips(groupChars(group), groupCounts(group)) + (group.charsNote ? `<span class="sub">${group.charsNote}</span>` : '')],
+          ['用韵', usage],
+          ['诗人', `<span class="muted">${group.poetsPending}</span> <span class="badge pending">待接入</span>`],
+          ['注', notesRow(group)],
+          ['参见', `<span class="see-also">
+            <a href="entry.html?char=${encodeURIComponent(group.sampleChar)}">字条目·${group.sampleChar}</a>
+            <a href="entry.html?rhyme=${encodeURIComponent(group.peer.name)}">${group.peer.label}</a>
+            <a href="index.html#method">口径说明</a>
+          </span>`]
+        ])}
+      </section>`;
+    document.title = `${group.name} · 韵部探索器`;
+    renderQuiz(group);
+  }
+
+  function renderUnknown(message) {
+    root.innerHTML = `
+      <div class="panel empty-state">${message}</div>
+      <section class="panel entry-card">
+        <div class="entry-row">
+          <span class="entry-label">快速入口</span>
+          <div class="entry-body">
+            ${chips(entryData.quickLinks.chars, null)}
+            <div class="see-also">
+              ${entryData.quickLinks.rhymes.map((name) => `<a href="entry.html?rhyme=${encodeURIComponent(name)}">韵部·${name}</a>`).join('')}
+            </div>
+          </div>
+        </div>
+      </section>`;
+    select('#quizRoot').innerHTML = '';
+    document.title = '条目 · 韵部探索器';
+  }
+
+  function route() {
+    const params = new URLSearchParams(location.search);
+    const ch = params.get('char');
+    const rhyme = params.get('rhyme');
+
+    if (ch) return renderCharEntry(normalizeChar(ch));
+    if (rhyme && entryData.groups[rhyme]) return renderRhymeEntry(entryData.groups[rhyme]);
+    if (rhyme) return renderUnknown(`暂无「${esc(rhyme)}」的韵部条目——演示范围：四支、三江。`);
+    return renderUnknown('在上方输入一个字或韵部名，查看词典式条目。');
   }
 
   function submit() {
-    const target = d.lookupUrl(query.value, preferredView);
-    if (target) app.navigate(target);
+    const input = select('#entryQuery');
+    const value = normalizeChar((input.value || '').trim());
+    if (!value) return;
+
+    if (entryData.groups[value]) {
+      app.navigate(`entry.html?rhyme=${encodeURIComponent(value)}`);
+      return;
+    }
+    if (groupOfChar(value)) {
+      app.navigate(`entry.html?char=${encodeURIComponent(value)}`);
+      return;
+    }
+    select('#queryHint').textContent = '演示范围暂无这个条目，试试「枝」「江」「诗」或「四支」「三江」';
   }
-  document.querySelector('#entryGo').addEventListener('click', submit);
-  query.addEventListener('keydown', (event) => {
+
+  select('#entryGo').addEventListener('click', submit);
+  select('#entryQuery').addEventListener('keydown', (event) => {
     if (event.key === 'Enter') submit();
   });
-  if (params.get('char')) renderChar(params.get('char'));
-  else if (d.groups.includes(params.get('rhyme'))) renderRhyme(params.get('rhyme'));
-  else renderUnknown(params.get('rhyme') ? `暂无「${params.get('rhyme')}」的韵部条目。` : '输入字、词语或韵部名开始查询，可在上方切换字条目与全文检索。', currentQuery);
+  select('#entryQuery').addEventListener('input', () => {
+    select('#queryHint').textContent = '';
+  });
+
+  route();
 })(window.RhymeTrace = window.RhymeTrace || {});
